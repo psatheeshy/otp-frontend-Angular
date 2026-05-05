@@ -1,0 +1,401 @@
+/* otp.component.scss */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+
+:host {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.otp-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 50%, #e8f5e9 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.otp-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 44px 40px 32px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Icon ── */
+.icon-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #e8f0fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+/* ── Heading ── */
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 6px;
+    letter-spacing: -0.3px;
+}
+
+.subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 4px;
+    line-height: 1.5;
+}
+
+.sent-info {
+    margin-bottom: 24px;
+}
+
+.change-link {
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+/* ── Form ── */
+.otp-form {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.field-group {
+    margin-bottom: 18px;
+}
+
+.field-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+/* ── Phone Row ── */
+.phone-row {
+    display: flex;
+    gap: 10px;
+}
+
+.country-select {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    height: 48px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    background: #f9fafb;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 0.875rem;
+    color: #374151;
+    transition: border-color 0.2s;
+
+    &:hover {
+        border-color: #1a56db;
+    }
+
+    .flag {
+        font-size: 1rem;
+    }
+
+    .dial-code {
+        font-weight: 500;
+    }
+
+    .chevron {
+        color: #9ca3af;
+    }
+}
+
+.phone-input {
+    flex: 1;
+    height: 48px;
+    padding: 0 14px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 0.9375rem;
+    font-family: inherit;
+    color: #111827;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+
+    &::placeholder {
+        color: #9ca3af;
+    }
+
+    &:focus {
+        border-color: #1a56db;
+        box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.12);
+    }
+
+    &.input-error {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+}
+
+.error-msg {
+    display: block;
+    font-size: 0.78rem;
+    color: #ef4444;
+    margin-top: 5px;
+}
+
+/* ── OTP Digit Boxes ── */
+.otp-digits-group {
+    text-align: center;
+}
+
+.resend-timer {
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.otp-digits-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.otp-box {
+    width: 48px;
+    height: 54px;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #111827;
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    outline: none;
+    caret-color: #1a56db;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &:focus {
+        border-color: #1a56db;
+        box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.12);
+    }
+
+    /* Error state — red border */
+    &.otp-box-error {
+        border-color: #ef4444;
+        background: #fff8f8;
+        animation: shake 0.35s ease;
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-4px);
+    }
+
+    60% {
+        transform: translateX(4px);
+    }
+}
+
+/* ── Inline Error Alert ── */
+.otp-error-alert {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    color: #dc2626;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    margin-top: 2px;
+    animation: fadeIn 0.2s ease;
+
+    svg {
+        flex-shrink: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Button ── */
+.btn-primary {
+    width: 100%;
+    height: 50px;
+    background: #1a56db;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+
+    &:hover:not(:disabled) {
+        background: #1648c0;
+        box-shadow: 0 4px 12px rgba(26, 86, 219, 0.3);
+        transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+}
+
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Resend row ── */
+.resend-row {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    margin: 14px 0 0;
+    text-align: center;
+}
+
+/* ── Divider ── */
+.divider {
+    height: 1px;
+    background: #f3f4f6;
+    margin: 22px 0 16px;
+}
+
+/* ── Info note ── */
+.info-note {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    justify-content: center;
+
+    p {
+        font-size: 0.78rem;
+        color: #9ca3af;
+        margin: 0;
+    }
+}
+
+/* ── Footer ── */
+.footer-note {
+    font-size: 0.78rem;
+    color: #9ca3af;
+    margin: 16px 0 0;
+    text-align: center;
+}
+
+.link {
+    color: #1a56db;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+
+/* ── Too Many Attempts Banner ── */
+.too-many-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fffbeb;
+    border: 1.5px solid #fcd34d;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    text-align: left;
+    animation: fadeIn 0.25s ease;
+
+    svg {
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+}
+
+.too-many-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    strong {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #92400e;
+    }
+
+    span {
+        font-size: 0.8rem;
+        color: #b45309;
+        line-height: 1.4;
+    }
+}
+
+/* Locked digit boxes */
+.otp-box-locked {
+    background: #f9fafb !important;
+    border-color: #e5e7eb !important;
+    color: #9ca3af !important;
+    cursor: not-allowed;
+    box-shadow: none !important;
+}

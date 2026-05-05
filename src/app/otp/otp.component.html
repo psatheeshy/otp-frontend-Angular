@@ -1,0 +1,145 @@
+<div class="otp-wrapper">
+  <div class="otp-card">
+
+    <!-- Icon -->
+    <div class="icon-circle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+        stroke="#1a56db" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+        <line x1="12" y1="18" x2="12.01" y2="18"/>
+      </svg>
+    </div>
+
+    <!-- Title changes based on state -->
+    <h1 class="title">{{ otpSent ? 'Enter code' : 'Verify your phone number' }}</h1>
+
+    <!-- Subtitle: before OTP sent -->
+    <p class="subtitle" *ngIf="!otpSent">
+      We'll send you a 6-digit code to verify your account.
+    </p>
+
+    <!-- Subtitle: after OTP sent -->
+    <div class="sent-info" *ngIf="otpSent">
+      <p class="subtitle">Sent to {{ otpForm.value.phone }}</p>
+      <a href="#" class="link change-link" (click)="goBack($event)">Change phone number</a>
+    </div>
+
+    <form [formGroup]="otpForm" class="otp-form">
+
+      <!-- Phone Number Step -->
+      <div class="field-group" *ngIf="!otpSent">
+        <label class="field-label">Phone Number</label>
+        <div class="phone-row">
+          
+          <input
+            type="tel"
+            formControlName="phone"
+            class="phone-input"
+            placeholder="000-000-0000"
+            [class.input-error]="otpForm.get('phone')?.invalid && otpForm.get('phone')?.touched"
+          />
+        </div>
+        <span class="error-msg"
+          *ngIf="otpForm.get('phone')?.invalid && otpForm.get('phone')?.touched">
+          Please enter a valid phone number.
+        </span>
+      </div>
+
+      <!-- OTP Digit Boxes Step -->
+      <div class="field-group otp-digits-group" *ngIf="otpSent">
+
+        <!-- Too Many Attempts Banner -->
+        <div class="too-many-banner" *ngIf="tooManyAttempts">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <div class="too-many-text">
+            <strong>Too many attempts</strong>
+            <span>Please request a new code or try again later.</span>
+          </div>
+        </div>
+
+        <div class="otp-digits-row">
+          <input
+            *ngFor="let box of otpBoxes; let i = index"
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            class="otp-box"
+            [class.otp-box-error]="otpError"
+            [class.otp-box-locked]="tooManyAttempts"
+            [value]="otpDigits[i]"
+            [disabled]="tooManyAttempts"
+            (input)="onOtpInput($event, i)"
+            (keydown)="onOtpKeydown($event, i)"
+            (paste)="onOtpPaste($event)"
+            #otpRef
+          />
+        </div>
+
+        <!-- Inline Error Alert -->
+        <div class="otp-error-alert" *ngIf="otpError && !tooManyAttempts">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+            fill="none" stroke="#dc2626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          Invalid code. Please check and try again.
+        </div>
+      </div>
+
+      <!-- Primary CTA Button -->
+      <button
+        type="button"
+        class="btn-primary"
+        [disabled]="loading || tooManyAttempts"
+        (click)="otpSent ? verifyOtp() : sendOtp()"
+      >
+        <span *ngIf="!loading">
+          {{ otpSent ? 'Verify OTP' : 'Send OTP' }}
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </span>
+        <span class="spinner" *ngIf="loading"></span>
+      </button>
+
+    </form>
+
+    <!-- Resend row -->
+    <p class="resend-row" *ngIf="otpSent">
+      Didn't receive the code?
+      <ng-container *ngIf="resendCountdown > 0">
+        <span class="resend-timer">Resend code in {{ resendMinutes }}:{{ resendSeconds }}</span>
+      </ng-container>
+      <a *ngIf="resendCountdown === 0" href="#" class="link" (click)="resendOtp($event)">Resend code</a>
+    </p>
+
+    <!-- Divider -->
+    <div class="divider"></div>
+
+    <!-- Info note -->
+    <div class="info-note">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+        fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+      <p>End-to-end encrypted verification</p>
+    </div>
+
+    <!-- Footer -->
+    <p class="footer-note">
+      By proceeding, you agree to our
+      <a href="#" class="link">Terms of Service</a> and
+      <a href="#" class="link">Privacy Policy</a>.
+    </p>
+
+  </div>
+</div>
