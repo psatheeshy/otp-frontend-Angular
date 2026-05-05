@@ -30,8 +30,8 @@ export class OtpComponent implements OnInit, OnDestroy {
   @ViewChildren('otpRef') otpRefs!: QueryList<ElementRef<HTMLInputElement>>;
 
   constructor(
-    private fb: FormBuilder,
     private router: Router,
+    private fb: FormBuilder,
     private authService: AuthService
   ) { }
 
@@ -115,6 +115,7 @@ export class OtpComponent implements OnInit, OnDestroy {
     });
   }
 
+
   verifyOtp(): void {
     if (this.otpForm.invalid) return;
 
@@ -127,7 +128,6 @@ export class OtpComponent implements OnInit, OnDestroy {
         this.otpError = false;
         this.message = 'OTP Verified ✅';
         this.router.navigate(['/home'])
-
         localStorage.setItem('token', res.token);
       },
       error: (err) => {
@@ -154,6 +154,12 @@ export class OtpComponent implements OnInit, OnDestroy {
 
   resendOtp(event: Event): void {
     event.preventDefault();
+    // Reset error & attempt state so UI unlocks
+    this.tooManyAttempts = false;
+    this.attemptCount = 0;
+    this.otpError = false;
+    this.otpDigits = ['', '', '', '', '', ''];
+    this.otpForm.get('otp')?.setValue('');
     this.sendOtp();
     this.startCountdown();
   }
@@ -186,5 +192,6 @@ export class OtpComponent implements OnInit, OnDestroy {
     this.otpForm.get('otp')?.setValue('');
   }
 }
+
 
 
